@@ -5,30 +5,137 @@
     <meta charset="UTF-8">
     <title> Список дел </title>
 </head>
-
 <body>
 <div class="main">
     <div class="head">
         <h1> Список дел:</h1>
-        <input type="text" placeholder="Enter text">
-        <button> Add</button>
-    </div>
-    <div>
-        <ol>
-            <li><input type="checkbox" id="Почесать кошку" name="Почесать кошку">
-                <span>Почесать кошку</span>
-                <button>&#9760;</button>
-            </li>
+        <div class="form">
+            <input type="search" id="input_box" placeholder="Enter text">
+            <button type="subm" id="btn_add" onclick="addElement()">Add</button>
+        </div>
 
-            <li><input type="checkbox" id="Полить картошку" name="Полить картошку"><span>Полить картошку</span>
-                <button>&#9760;</button>
-            </li>
-            <li><input type="checkbox" id="Сложить в лукошко" name="Сложить в лукошко"><span>Сложить в лукошко</span>
-                <button>&#9760;</button>
-            </li>
+        <ol id="ol">
+<!--            <li><input type="checkbox" id="1" class="checkbox">-->
+<!--                <label for="1">Почесать кошку</label>-->
+<!--                <button id="deleting">x</button>-->
+<!--            </li>-->
+
+            <!--            <li><input type="checkbox" id="2" class="checkbox">-->
+            <!--                <label for="2">Полить картошку</label>-->
+            <!--                <button>x</button>-->
+            <!--            </li>-->
+
+            <!--            <li><input type="checkbox" id="3" class="checkbox">-->
+            <!--                <label for="3">Сложить в лукошко</label>-->
+            <!--                <button>x</button>-->
+            <!--            </li>-->
         </ol>
+        <div class="list_filter">
+            <a id="done" href="#">Сделано(<span>0</span>)</a>
+            <a id="notDone" href="#">Не сделано(<span>0</span>)</a>
+            <a id="all" href="#">Все(<span>0</span>)</a>
+        </div>
+
+        <script>
+            const task = document.querySelector('ol');
+            const filter = document.querySelector('.list_filter');
+            const doneTasks = document.getElementsByClassName('_done');
+            const notDoneTasks = document.getElementsByClassName('_notDone');
+            const allTasks = document.getElementsByClassName('list_elem');
+
+            function addElement() {
+                const id = Math.random().toString(36).substring(2);
+                const $ol = document.querySelector('#ol');
+                let text = document.getElementById("input_box").value;
+                if (text !== "")
+                    $ol.insertAdjacentHTML('beforeend', `<li class="list_elem _notDone">
+                <input onclick="taskHandler(event)" type="checkbox" id =${id} class="checkbox">
+                <label for=${id}>${text}</label>
+                <button  id = "deleting">x</button>
+                </li>`);
+
+                count();
+            }
+
+            // task.addEventListener('click', event => {
+            //     const element = event.target.closest('li');
+            //     if (event.target.closest('#deleting')) {
+            //         event.target.parentElement.remove();
+            //     }
+            //     if (element) {
+            //         element.classList.toggle('_done');
+            //         element.classList.toggle('_notDone');
+            //     }
+            // });
+            function taskHandler(event){
+                let listElement = event.target.closest('.list_elem');
+                //let delButton = event.target.closest('#deleting');
+
+
+                if (event.target.closest('#deleting')) {
+                    event.target.parentElement.remove();
+                }
+
+                // if (listElement && delButton) {
+                //     listElement.remove();
+                // }
+
+                if (listElement) {
+                    listElement.classList.toggle('_done');
+                    listElement.classList.toggle('_notDone');
+                }
+                count();
+            }
+
+            filter.addEventListener('click', event => {
+                event.preventDefault();
+
+                let currentFilter = event.target.closest('a');
+
+                if (currentFilter) {
+                    if (currentFilter.getAttribute('id') === 'done')
+                        display(doneTasks, notDoneTasks);
+
+                    if (currentFilter.getAttribute('id') === 'notDone')
+                        display(notDoneTasks, doneTasks);
+
+                    if (currentFilter.getAttribute('id') === 'all') {
+                        display(doneTasks, notDoneTasks, true);
+                    }
+                }
+            });
+
+            function display(show, hide, isDisplayAll = false) {
+                if (!isDisplayAll) {
+                    for (item of show) {
+                        item.style.visibility = 'visible';
+                        item.style.position = 'relative';
+                    }
+                    for (item of hide) {
+                        item.style.visibility = 'hidden';
+                        item.style.position = 'absolute';
+                    }
+                } else {
+                    for (item of show) {
+                        item.style.visibility = 'visible';
+                        item.style.position = 'relative';
+                    }
+                    for (item of hide) {
+                        item.style.visibility = 'visible';
+                        item.style.position = 'relative';
+                    }
+                }
+            }
+
+            function count() {
+                document.querySelector('#done').firstElementChild.innerText = doneTasks.length;
+                document.querySelector('#notDone').firstElementChild.innerText = notDoneTasks.length;
+                document.querySelector('#all').firstElementChild.innerText = allTasks.length;
+            }
+        </script>
     </div>
 </div>
-</body>
 
+
+</body>
 </html>
